@@ -4,6 +4,7 @@ import Axios from '../utility/Axios';
 import { useNavigate } from 'react-router-dom';
 const AddProduct = () => {
     const nav = useNavigate();
+    const [file, setFile] = useState(null);
     const [newProduct, setNewProduct] = useState({
         title: "",
         price: 0,
@@ -12,13 +13,40 @@ const AddProduct = () => {
         image: ""
     })
 
-    async function AddNewProduct(product) {
+    // async function AddNewProduct(product) {
+    //     try {
+    //         const res = await Axios.post("/products/addProduct", { product });
+    //         console.log("Add Product:", res.data);
+
+    //     } catch (error) {
+    //         console.log("Add Product error: ", error.message);
+    //     }
+    // }
+
+    async function handleSubmit(e) {
+
+        e.preventDefault();
         try {
-            const res = await Axios.post("/products/addProduct", { product });
+            const formData = new FormData();
+            formData.append("product", JSON.stringify(newProduct));
+            if (file) formData.append("file", file);
+            console.log(formData);
+            
+            const res = await Axios.post("/products/addProduct", formData);
             console.log("Add Product:", res.data);
 
+            setNewProduct({
+                title: "",
+                price: 0,
+                category: "",
+                description: "",
+                image: ""
+            })
+            setFile(null);
+            nav("/");
+
         } catch (error) {
-            console.log("Add Product error: ", error.message);
+            console.log("Add Product error:", error.message);
         }
     }
 
@@ -37,19 +65,24 @@ const AddProduct = () => {
                     <h3 className="text-center mb-4">Add New Product</h3>
 
 
-                    <form onSubmit={(e) => {
-                        e.preventDefault();
-                        AddNewProduct(newProduct);
-                        setNewProduct({
-                            title: "",
-                            price: 0,
-                            category: "",
-                            description: "",
-                            image: ""
-                        })
-                        nav("/");
-                        
-                    }} method='post'>
+                    <form encType='multipart/form-data'
+                    onSubmit={handleSubmit}
+                        // onSubmit={
+                        //     async (e) => {
+                        //     e.preventDefault();
+                        //     await AddNewProduct(newProduct, file);
+                        //     setNewProduct({
+                        //         title: "",
+                        //         price: 0,
+                        //         category: "",
+                        //         description: "",
+                        //         image: ""
+                        //     })
+                        //     setFile(null);
+                        //     nav("/");
+
+                        // }}
+                         method='post'>
                         <input
                             className="form-control"
                             value={newProduct.title}
@@ -85,16 +118,18 @@ const AddProduct = () => {
                             id="description"
                             placeholder='Enter Product Description'
                             style={{ width: "100%", margin: "10px 0px" }}></textarea>
-                        <input className="form-control"
+                        {/* <input className="form-control"
                             type="text"
                             value={newProduct.image}
                             onChange={handleChange}
                             name="image"
                             id="image"
                             placeholder='Enter Product image URL'
-                            style={{ margin: "10px 0px" }} />
+                            style={{ margin: "10px 0px" }} /> */}
+
+                        <input className="form-control" type="file" onChange={(e) => setFile(e.target.files[0])} />
                         <button className='btn btn-success'>Add Product</button>
-                        
+
                     </form>
                 </div>
             </div>
