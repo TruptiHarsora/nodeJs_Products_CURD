@@ -31,7 +31,7 @@ const AddProduct = () => {
             formData.append("product", JSON.stringify(newProduct));
             if (file) formData.append("file", file);
             console.log(formData);
-            
+
             const res = await Axios.post("/products/addProduct", formData);
             console.log("Add Product:", res.data);
 
@@ -66,7 +66,7 @@ const AddProduct = () => {
 
 
                     <form encType='multipart/form-data'
-                    onSubmit={handleSubmit}
+                        onSubmit={handleSubmit}
                         // onSubmit={
                         //     async (e) => {
                         //     e.preventDefault();
@@ -82,7 +82,7 @@ const AddProduct = () => {
                         //     nav("/");
 
                         // }}
-                         method='post'>
+                        method='post'>
                         <input
                             className="form-control"
                             value={newProduct.title}
@@ -127,6 +127,13 @@ const AddProduct = () => {
                             placeholder='Enter Product image URL'
                             style={{ margin: "10px 0px" }} /> */}
 
+                        <div style={{ margin: "10px 0px" }}>
+                            <label>Current Image:</label>
+                            {file && (
+                                <img src={URL.createObjectURL(file)} alt="current" style={{ display: "block", maxWidth: "100px", marginTop: "5px" }} />
+                            )}
+                        </div>
+                        
                         <input className="form-control" type="file" onChange={(e) => setFile(e.target.files[0])} />
                         <button className='btn btn-success'>Add Product</button>
 
